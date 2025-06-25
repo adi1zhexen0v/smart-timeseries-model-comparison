@@ -2,9 +2,9 @@ import os
 import sys
 import logging
 import pandas as pd
-from utils import get_latest_pipeline_dir
+from utils import get_project_root, get_latest_pipeline_dir
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+project_root = get_project_root()
 sys.path.insert(0, project_root)
 
 from src.preprocess.feature_selector import select_features
@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 def main():
     pipeline_dir = get_latest_pipeline_dir()
-    input_path = os.path.join(pipeline_dir, "filtered.csv")
+    input_path = os.path.join(pipeline_dir, "step3_filtered_min_days.csv")
     output_path = os.path.join(pipeline_dir, "step4_features_selected.csv")
 
     if not os.path.exists(input_path):

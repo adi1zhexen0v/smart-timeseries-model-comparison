@@ -24,7 +24,7 @@ def select_features(df: pd.DataFrame, output_dir: str, threshold: float = 0.9) -
     logging.info(f"Selected features (≥ {int(threshold * 100)}% filled): {selected_features}")
 
     os.makedirs(output_dir, exist_ok=True)
-    with open(os.path.join(output_dir, "features.json"), "w") as f:
+    with open(os.path.join(output_dir, "selected_features.json"), "w") as f:
         json.dump(selected_features, f, indent=2)
 
     final_cols = non_feature_cols + selected_features

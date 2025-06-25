@@ -23,7 +23,7 @@ stations = [
   },
   {
     'folder': os.path.join(BASE_DIR, 'station_4'),
-    'name': 'School 32',
+    'name': 'Kokzhyek 63',
     'lat': 43.372796,
     'lon': 76.991409
   },
@@ -35,7 +35,7 @@ stations = [
   },
   {
     'folder': os.path.join(BASE_DIR, 'station_6'),
-    'name': 'Zorge street, 32',
+    'name': 'Zorge street, 14',
     'lat': 43.338002,
     'lon': 76.952223
   },
@@ -101,7 +101,7 @@ stations = [
   },
   {
     'folder': os.path.join(BASE_DIR, 'station_18'),
-    'name': 'CHP-2',
+    'name': 'CHP',
     'lat': 43.291054,
     'lon': 76.800777
   },
@@ -182,12 +182,6 @@ stations = [
     'name': 'Nicolas International chain of wineries',
     'lat': 43.194805,
     'lon': 76.910057
-  },
-  {
-    'folder': os.path.join(BASE_DIR, 'station_35'),
-    'name': 'Kensay',
-    'lat': 43.233886,
-    'lon': 76.971037
   },
   {
     'folder': os.path.join(BASE_DIR, 'station_36'),

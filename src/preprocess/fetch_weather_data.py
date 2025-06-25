@@ -114,4 +114,5 @@ def add_weather_columns(df: pd.DataFrame, sleep_seconds: int = 15) -> pd.DataFra
         how="left"
     )
     enriched["date"] = pd.to_datetime(enriched["date"])
+    enriched.dropna(subset=["temperature", "humidity", "wind_speed", "pressure"], inplace=True)
     return enriched
