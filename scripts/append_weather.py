@@ -26,7 +26,7 @@ def main():
 
     enriched_df = add_weather_columns(df)
 
-    output_path = os.path.join(pipeline_dir, "merged_with_weather.csv")
+    output_path = os.path.join(pipeline_dir, "step2_weather_merged.csv")
     enriched_df.to_csv(output_path, index=False)
 
     logging.info(f"Saved weather-augmented dataset to {output_path}")

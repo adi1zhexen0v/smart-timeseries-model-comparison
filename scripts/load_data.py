@@ -25,7 +25,7 @@ def main():
             f.write(output_dir)
 
         df["date"] = pd.to_datetime(df["date"])
-        combined_path = os.path.join(output_dir, "combined.csv")
+        combined_path = os.path.join(output_dir, "step1_combined_raw.csv")
         df.to_csv(combined_path, index=False)
 
         logging.info(f"Saved combined data to {combined_path}")
