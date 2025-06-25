@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.log
+
+# Virtual env
+.venv/
+env/
+venv/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model artifacts
+outputs/models/
+outputs/predictions/
+outputs/diagrams/
+outputs/figures/
+outputs/logs/
+
+# Data files
+data/raw/
+data/processed/
+
+# Secrets
+.env
