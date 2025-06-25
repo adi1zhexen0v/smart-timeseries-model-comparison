@@ -1,28 +1,37 @@
 import os
 import sys
-import logging
 import pandas as pd
+import logging
+from datetime import datetime
+from utils import get_project_root
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+project_root = get_project_root()
 sys.path.insert(0, project_root)
 
 from src.extract.sensor_loader import collect_all_stations_data
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-if __name__ == "__main__":
+def main():
     df = collect_all_stations_data()
 
     if not df.empty:
-        processed_dir = os.path.join(project_root, "data", "processed")
-        os.makedirs(processed_dir, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        output_dir = os.path.join(project_root, "data", "processed", timestamp)
+        os.makedirs(output_dir, exist_ok=True)
+
+        latest_path_file = os.path.join(project_root, "data", "processed", "latest.txt")
+        with open(latest_path_file, "w") as f:
+            f.write(output_dir)
 
         df["date"] = pd.to_datetime(df["date"])
+        combined_path = os.path.join(output_dir, "combined.csv")
+        df.to_csv(combined_path, index=False)
 
-        filename = f"combined_{pd.Timestamp.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
-        output_path = os.path.join(processed_dir, filename)
-
-        df.to_csv(output_path, index=False)
-        logging.info(f"Saved combined data to {output_path}")
+        logging.info(f"Saved combined data to {combined_path}")
+        logging.info(f"Pipeline root set to {output_dir}")
     else:
         logging.warning("No data to save.")
+
+if __name__ == "__main__":
+    main()
