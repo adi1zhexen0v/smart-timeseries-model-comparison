@@ -2,7 +2,6 @@ import os
 import json
 import pandas as pd
 import logging
-from typing import List
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

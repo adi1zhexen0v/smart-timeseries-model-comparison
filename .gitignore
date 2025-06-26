@@ -38,3 +38,6 @@ data/processed/
 
 # Secrets
 .env
+
+# Requests cache
+.cache*

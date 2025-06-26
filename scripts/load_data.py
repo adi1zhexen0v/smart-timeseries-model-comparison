@@ -16,6 +16,8 @@ def main():
     df = collect_all_stations_data()
 
     if not df.empty:
+        df  = df[(df["PM2.5"] >= 0) & (df["PM2.5"] <= 300)]
+
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         output_dir = os.path.join(project_root, "data", "processed", timestamp)
         os.makedirs(output_dir, exist_ok=True)

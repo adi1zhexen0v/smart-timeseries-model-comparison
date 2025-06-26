@@ -26,8 +26,14 @@ def main():
     with open(features_path, "r") as f:
         selected_features = json.load(f)
 
-    logging.info(f"Loaded dataset from {input_path}")
-    df_scaled, scaler_params = scale_features(df, selected_features)
+    target_column = "PM2.5"
+    logging.info(f"Scaling features: {selected_features + [target_column]}")
+
+    df_scaled, scaler_params = scale_features(
+        df=df,
+        features=selected_features,
+        target=target_column
+    )
 
     df_scaled.to_csv(output_path, index=False)
     with open(scaler_path, "w") as f:
@@ -35,7 +41,6 @@ def main():
 
     logging.info(f"Saved scaled dataset to {output_path}")
     logging.info(f"Saved scaler parameters to {scaler_path}")
-
 
 if __name__ == "__main__":
     main()

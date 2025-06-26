@@ -1,7 +1,7 @@
 import pandas as pd
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
-def scale_features(df: pd.DataFrame, features: List[str]) -> Tuple[pd.DataFrame, dict]:
+def scale_features(df: pd.DataFrame, features: List[str], target: Optional[str] = None) -> Tuple[pd.DataFrame, dict]:
     scaler_params = {}
     df_scaled = df.copy()
 
