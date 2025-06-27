@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-def plot_real_vs_predicted(dataset_dir: str, model_path: str, scaler_path: str, save_path: str):
+def plot_real_vs_predicted(dataset_dir, model_path, scaler_path, model_name: str, output_dir: str):
     X_test = np.load(os.path.join(dataset_dir, "X_test.npy"))
     y_test = np.load(os.path.join(dataset_dir, "y_test.npy"))
 
@@ -27,8 +27,11 @@ def plot_real_vs_predicted(dataset_dir: str, model_path: str, scaler_path: str, 
     plt.plot(y_pred_denorm[:200], label="Predicted", linewidth=2)
     plt.xlabel("Time Steps")
     plt.ylabel("PM2.5 (µg/m³)")
-    plt.title("Real vs Predicted PM2.5")
+    plt.title(f"Real vs Predicted PM2.5 ({model_name.upper()})")
     plt.legend()
     plt.tight_layout()
+
+    filename = f"{model_name}_real_vs_predicted.png"
+    save_path = os.path.join(output_dir, filename)
     plt.savefig(save_path)
     logging.info(f"Saved Real vs Predicted plot to {save_path}")

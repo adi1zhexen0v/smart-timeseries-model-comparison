@@ -1,7 +1,8 @@
 import os
 import numpy as np
+from tcn import TCN
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import MeanAbsoluteError
@@ -19,20 +20,41 @@ def load_dataset(dataset_dir):
         "y_test": load_file("y_test", dataset_dir),
     }
 
-def build_lstm_model(input_shape, units=64, dropout=0.3, dense_units=32):
+def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8), nb_stacks=1,
+                    dropout=0.3, dense_units=32):
     model = Sequential()
-    model.add(LSTM(units, input_shape=input_shape))
+    model.add(TCN(
+        nb_filters=nb_filters,
+        kernel_size=kernel_size,
+        dilations=list(dilations),
+        nb_stacks=nb_stacks,
+        use_skip_connections=True,
+        dropout_rate=dropout,
+        return_sequences=False,
+        input_shape=input_shape
+    ))
     model.add(Dropout(dropout))
     model.add(Dense(dense_units, activation="relu"))
     model.add(Dense(1))
     model.summary()
     return model
 
-def train_lstm(dataset_dir, save_path, epochs=100, batch_size=32, units=64, dropout=0.3, dense_units=32):
+def train_tcn(dataset_dir, save_path, epochs=100, batch_size=32,
+              nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8),
+              nb_stacks=1, dropout=0.3, dense_units=32):
     data = load_dataset(dataset_dir)
     input_shape = data["X_train"].shape[1:]
 
-    model = build_lstm_model(input_shape, units=units, dropout=dropout, dense_units=dense_units)
+    model = build_tcn_model(
+        input_shape=input_shape,
+        nb_filters=nb_filters,
+        kernel_size=kernel_size,
+        dilations=dilations,
+        nb_stacks=nb_stacks,
+        dropout=dropout,
+        dense_units=dense_units
+    )
+
     model.compile(
         loss="mse",
         optimizer=Adam(0.001),

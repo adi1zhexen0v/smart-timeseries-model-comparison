@@ -26,11 +26,7 @@ venv/
 Thumbs.db
 
 # Model artifacts
-outputs/models/
-outputs/predictions/
-outputs/diagrams/
-outputs/figures/
-outputs/logs/
+outputs/*
 
 # Data files
 data/raw/
