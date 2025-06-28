@@ -7,9 +7,9 @@ from tensorflow.keras.models import load_model
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-def plot_real_vs_predicted(dataset_dir, model_path, scaler_path, dataset_type: str, model_type: str, target_col: str, output_dir: str):
-    X_test = np.load(os.path.join(dataset_dir, "X_test.npy"))
-    y_test = np.load(os.path.join(dataset_dir, "y_test.npy"))
+def plot_real_vs_predicted(dataset_dir, model_path, scaler_path, model_name: str, model_type: str, target_col: str, output_dir: str):
+    X_test = np.load(os.path.join(dataset_dir, "prepared_dataset", "X_test.npy"))
+    y_test = np.load(os.path.join(dataset_dir, "prepared_dataset", "y_test.npy"))
 
     model = load_model(model_path)
     y_pred = model.predict(X_test).flatten()
@@ -27,11 +27,11 @@ def plot_real_vs_predicted(dataset_dir, model_path, scaler_path, dataset_type: s
     plt.plot(y_pred_denorm[:200], label="Predicted", linewidth=2)
     plt.xlabel("Time Steps")
     plt.ylabel(f"{target_col} (denormalized)")
-    plt.title(f"Real vs Predicted {target_col} ({dataset_type.upper()} - {model_type.upper()})")
+    plt.title(f"Real vs Predicted {target_col} ({model_type.upper()})")
     plt.legend()
     plt.tight_layout()
 
-    filename = f"{dataset_type}_{model_type}_real_vs_predicted.png"
+    filename = f"{model_name}_{model_type}_real_vs_predicted.png"
     save_path = os.path.join(output_dir, filename)
     plt.savefig(save_path)
     logging.info(f"Saved Real vs Predicted plot to {save_path}")

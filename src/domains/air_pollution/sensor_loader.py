@@ -2,7 +2,7 @@ import os
 import logging
 import pandas as pd
 from typing import Optional
-from data.stations import stations
+from data.air_pollution.stations import stations
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

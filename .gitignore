@@ -38,7 +38,8 @@ outputs/*
 
 # Data files – ignore everything in data except specific tracked files
 data/*
-!data/.gitkeep  # use a placeholder if you want Git to keep the folder
+!data/air_pollution/stations.py
+!data/traffic/.gitkeep
 
 # Secrets
 .env

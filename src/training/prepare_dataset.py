@@ -1,20 +1,11 @@
 import os
-import sys
 import json
 import logging
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.insert(0, project_root)
-
-from scripts.utils import get_latest_pipeline_dir
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-DEFAULT_SEQUENCE_LENGTH = 30
-DEFAULT_TARGET_COLUMN = "PM2.5"
 
 def create_sequences(df, feature_cols, target_col, sequence_length):
     X, y = [], []
@@ -26,50 +17,38 @@ def create_sequences(df, feature_cols, target_col, sequence_length):
             y.append(seq_y)
     return np.array(X), np.array(y)
 
-def load_config(config_path: str):
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(f"Config not found: {config_path}")
-    with open(config_path, "r") as f:
-        return json.load(f)
 
-def main():
-    pipeline_dir = get_latest_pipeline_dir()
-    input_path = os.path.join(pipeline_dir, "step6_scaled_data.csv")
-    feature_path = os.path.join(pipeline_dir, "selected_features.json")
-    config_path = os.path.join(pipeline_dir, "prepare_config.json")
-    output_dir = os.path.join(pipeline_dir, "prepared_dataset")
-    os.makedirs(output_dir, exist_ok=True)
+def manual_split(X, y, train_frac=0.6, val_frac=0.2):
+    n = len(X)
+    train_end = int(n * train_frac)
+    val_end = train_end + int(n * val_frac)
 
-    config = load_config(config_path)
-    target_col = config.get("target_column", DEFAULT_TARGET_COLUMN)
-    sequence_length = config.get("sequence_length", DEFAULT_SEQUENCE_LENGTH)
+    X_train, y_train = X[:train_end], y[:train_end]
+    X_val, y_val = X[train_end:val_end], y[train_end:val_end]
+    X_test, y_test = X[val_end:], y[val_end:]
 
-    df = pd.read_csv(input_path)
-    df = df.sort_values("date")
+    return {
+        "X_train": X_train, "y_train": y_train,
+        "X_val": X_val, "y_val": y_val,
+        "X_test": X_test, "y_test": y_test,
+    }
 
-    with open(feature_path, "r") as f:
+
+def prepare_dataset(input_path, features_path, output_dir, target_column="PM2.5", sequence_length=30):
+    df = pd.read_csv(input_path).sort_values("date")
+
+    with open(features_path, "r") as f:
         feature_cols = json.load(f)
 
-    if target_col not in df.columns:
-        raise ValueError(f"Target column '{target_col}' not found in data.")
+    if target_column not in df.columns:
+        raise ValueError(f"Target column '{target_column}' not found in dataframe.")
 
-    logging.info(f"Using features: {feature_cols}")
-    logging.info(f"Target: {target_col}")
-    logging.info(f"Sequence length: {sequence_length}")
+    logging.info(f"Creating sequences with target '{target_column}' and length {sequence_length}")
+    X, y = create_sequences(df, feature_cols, target_column, sequence_length)
 
-    X, y = create_sequences(df, feature_cols, target_col, sequence_length)
+    dataset = manual_split(X, y)
 
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.4, shuffle=False)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, shuffle=False)
-
-    np.save(os.path.join(output_dir, "X_train.npy"), X_train)
-    np.save(os.path.join(output_dir, "y_train.npy"), y_train)
-    np.save(os.path.join(output_dir, "X_val.npy"), X_val)
-    np.save(os.path.join(output_dir, "y_val.npy"), y_val)
-    np.save(os.path.join(output_dir, "X_test.npy"), X_test)
-    np.save(os.path.join(output_dir, "y_test.npy"), y_test)
-
-    logging.info(f"Saved prepared sequences to {output_dir}")
-
-if __name__ == "__main__":
-    main()
+    os.makedirs(output_dir, exist_ok=True)
+    for split_name, arr in dataset.items():
+        np.save(os.path.join(output_dir, f"{split_name}.npy"), arr)
+        logging.info(f"Saved {split_name}.npy to {output_dir}")

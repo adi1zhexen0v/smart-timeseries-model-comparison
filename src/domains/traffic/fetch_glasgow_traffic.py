@@ -7,11 +7,11 @@ from datetime import datetime, timedelta
 
 BASE_URL = "http://api.glasgow.gov.uk/traffic/v1/movement/history"
 STEP = timedelta(days=7)
-SLEEP_WEEKS = 90
-SLEEP_PAGES = 10
+SLEEP_WEEKS = 60
+SLEEP_PAGES = 5
 PAGE_SIZE = 100
 RETRY_LIMIT = 3
-REQUEST_TIMEOUT = 120
+REQUEST_TIMEOUT = 90
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
@@ -51,13 +51,13 @@ def fetch_glasgow_traffic(start_date: datetime, end_date: datetime, output_path:
 
                         if not data:
                             logging.info(f"No more data for {week_start.date()}, page {page}")
-                            break  # Exit retry loop
+                            break
 
                         all_data.extend(data)
                         logging.info(f"Retrieved {len(data)} records (page {page})")
                         page += 1
                         time.sleep(SLEEP_PAGES)
-                        break  # Successful request, exit retry loop
+                        break
 
                     except requests.exceptions.ReadTimeout:
                         retry_count += 1
@@ -71,9 +71,8 @@ def fetch_glasgow_traffic(start_date: datetime, end_date: datetime, output_path:
 
                 else:
                     logging.error(f"Failed to fetch page {page} for {week_start.date()} after {RETRY_LIMIT} attempts")
-                    break  # Exit while True on repeated failure
+                    break
 
-                # ⚠️ New condition to prevent infinite looping on repeated empty page 2
                 if data == []:
                     break
 
@@ -109,14 +108,3 @@ def fetch_glasgow_traffic(start_date: datetime, end_date: datetime, output_path:
             logging.info(f"Saved partial data to: {output_path}")
         else:
             logging.warning("No data was collected. Nothing to save.")
-
-if __name__ == "__main__":
-    start_date = datetime(2021, 9, 12)
-    # end_date = datetime.utcnow() - timedelta(days=1)
-    end_date = datetime(2021, 9, 19)
-
-    timestamp_id = int(datetime.utcnow().timestamp() * 1000)
-    filename = f"{timestamp_id}_glasgow_traffic_data.csv"
-    output_path = os.path.join("data", "traffic", "processed", filename)
-
-    fetch_glasgow_traffic(start_date, end_date, output_path)
