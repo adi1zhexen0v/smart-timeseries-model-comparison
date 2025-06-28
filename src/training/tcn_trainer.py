@@ -20,8 +20,8 @@ def load_dataset(dataset_dir):
         "y_test": load_file("y_test", dataset_dir),
     }
 
-def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8), nb_stacks=1,
-                    dropout=0.3, dense_units=32):
+def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8),
+                    nb_stacks=1, dropout=0.3, dense_units=32):
     model = Sequential()
     model.add(TCN(
         nb_filters=nb_filters,
@@ -39,9 +39,20 @@ def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 
     model.summary()
     return model
 
-def train_tcn(dataset_dir, save_path, epochs=100, batch_size=32,
-              nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8),
-              nb_stacks=1, dropout=0.3, dense_units=32):
+def train_tcn(
+    dataset_dir,
+    output_dir,
+    dataset_type="air_pollution",
+    tag="default",
+    epochs=100,
+    batch_size=32,
+    nb_filters=64,
+    kernel_size=3,
+    dilations=(1, 2, 4, 8),
+    nb_stacks=1,
+    dropout=0.3,
+    dense_units=32
+):
     data = load_dataset(dataset_dir)
     input_shape = data["X_train"].shape[1:]
 
@@ -76,5 +87,9 @@ def train_tcn(dataset_dir, save_path, epochs=100, batch_size=32,
         verbose=1
     )
 
+    os.makedirs(output_dir, exist_ok=True)
+    model_name = f"{dataset_type}_{tag}_tcn.keras"
+    save_path = os.path.join(output_dir, model_name)
     model.save(save_path)
+
     return model, history, data

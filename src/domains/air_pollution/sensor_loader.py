@@ -58,12 +58,13 @@ def load_station_data(folder_path: str, station_name: str, lat: float, lon: floa
     return merged_df
 
 
-def collect_all_stations_data() -> pd.DataFrame:
+def collect_all_stations_data(base_folder: str) -> pd.DataFrame:
     all_data = []
 
     for station in stations:
+        folder_path = os.path.join(base_folder, station["folder"])
         df = load_station_data(
-            folder_path=station["folder"],
+            folder_path=folder_path,
             station_name=station["name"],
             lat=station["lat"],
             lon=station["lon"]
@@ -81,3 +82,4 @@ def collect_all_stations_data() -> pd.DataFrame:
     else:
         logging.warning("No data collected from any station")
         return pd.DataFrame()
+

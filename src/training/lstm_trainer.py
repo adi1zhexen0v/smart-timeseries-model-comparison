@@ -28,7 +28,7 @@ def build_lstm_model(input_shape, units=64, dropout=0.3, dense_units=32):
     model.summary()
     return model
 
-def train_lstm(dataset_dir, save_path, epochs=100, batch_size=32, units=64, dropout=0.3, dense_units=32):
+def train_lstm(dataset_dir, output_dir, dataset_type="air_pollution", tag="default", epochs=100, batch_size=32, units=64, dropout=0.3, dense_units=32):
     data = load_dataset(dataset_dir)
     input_shape = data["X_train"].shape[1:]
 
@@ -54,5 +54,10 @@ def train_lstm(dataset_dir, save_path, epochs=100, batch_size=32, units=64, drop
         verbose=1
     )
 
+    os.makedirs(output_dir, exist_ok=True)
+    model_name = f"{dataset_type}_{tag}_lstm.keras"
+    save_path = os.path.join(output_dir, model_name)
     model.save(save_path)
+
     return model, history, data
+

@@ -25,12 +25,20 @@ venv/
 .DS_Store
 Thumbs.db
 
+# Build artifacts
+build/
+dist/
+*.spec
+
+# BAT files
+*.bat
+
 # Model artifacts
 outputs/*
 
-# Data files
-data/raw/
-data/processed/
+# Data files – ignore everything in data except specific tracked files
+data/*
+!data/.gitkeep  # use a placeholder if you want Git to keep the folder
 
 # Secrets
 .env

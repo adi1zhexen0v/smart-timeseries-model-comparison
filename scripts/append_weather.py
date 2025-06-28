@@ -7,7 +7,7 @@ from utils import get_project_root, get_latest_pipeline_dir
 project_root = get_project_root()
 sys.path.insert(0, project_root)
 
-from src.preprocess.fetch_weather_data import add_weather_columns
+from src.domains.air_pollution.fetch_weather_data import add_weather_columns
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

@@ -1,11 +1,13 @@
 import pandas as pd
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 
-def scale_features(df: pd.DataFrame, features: List[str], target: Optional[str] = None) -> Tuple[pd.DataFrame, dict]:
+def scale_features(df: pd.DataFrame, features: List[str], target: Optional[str] = None) -> Tuple[pd.DataFrame, Dict[str, Dict[str, float]]]:
     scaler_params = {}
     df_scaled = df.copy()
 
-    for col in features:
+    columns_to_scale = features + ([target] if target else [])
+
+    for col in columns_to_scale:
         mean = df_scaled[col].mean()
         std = df_scaled[col].std()
 

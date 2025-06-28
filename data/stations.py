@@ -1,6 +1,6 @@
 import os
 
-BASE_DIR = os.path.join(os.path.dirname(__file__), "raw")
+BASE_DIR = os.path.join(os.path.dirname(__file__), "air_pollution", "raw")
 
 stations = [
   {

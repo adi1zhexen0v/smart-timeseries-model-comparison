@@ -20,4 +20,6 @@ def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
 
     df["season"] = df["month"].apply(set_season)
     df["season"] = df["season"].map({"winter": 0, "spring": 1, "summer": 2, "autumn": 3})
+    df["is_weekend"] = df["dayofweek"].isin([5, 6]).astype(int)
+
     return df

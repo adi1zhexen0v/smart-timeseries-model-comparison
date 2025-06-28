@@ -14,8 +14,8 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 if __name__ == "__main__":
     # start_date = datetime(2021, 9, 12)
     # end_date = datetime.utcnow() - timedelta(days=1)
-    start_date = datetime(2021, 10, 31)
-    end_date = datetime(2021, 12, 12)
+    start_date = datetime(2021, 12, 19)
+    end_date = datetime(2022, 1, 31)
 
     timestamp_id = int(datetime.utcnow().timestamp() * 1000)
     filename = f"{timestamp_id}_glasgow_traffic_data.csv"

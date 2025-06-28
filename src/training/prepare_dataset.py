@@ -11,9 +11,10 @@ sys.path.insert(0, project_root)
 
 from scripts.utils import get_latest_pipeline_dir
 
-SEQUENCE_LENGTH = 30
-TARGET_COLUMN = "PM2.5"
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+DEFAULT_SEQUENCE_LENGTH = 30
+DEFAULT_TARGET_COLUMN = "PM2.5"
 
 def create_sequences(df, feature_cols, target_col, sequence_length):
     X, y = [], []
@@ -25,25 +26,38 @@ def create_sequences(df, feature_cols, target_col, sequence_length):
             y.append(seq_y)
     return np.array(X), np.array(y)
 
+def load_config(config_path: str):
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"Config not found: {config_path}")
+    with open(config_path, "r") as f:
+        return json.load(f)
+
 def main():
     pipeline_dir = get_latest_pipeline_dir()
     input_path = os.path.join(pipeline_dir, "step6_scaled_data.csv")
+    feature_path = os.path.join(pipeline_dir, "selected_features.json")
+    config_path = os.path.join(pipeline_dir, "prepare_config.json")
     output_dir = os.path.join(pipeline_dir, "prepared_dataset")
     os.makedirs(output_dir, exist_ok=True)
+
+    config = load_config(config_path)
+    target_col = config.get("target_column", DEFAULT_TARGET_COLUMN)
+    sequence_length = config.get("sequence_length", DEFAULT_SEQUENCE_LENGTH)
 
     df = pd.read_csv(input_path)
     df = df.sort_values("date")
 
-    with open(os.path.join(pipeline_dir, "selected_features.json"), "r") as f:
+    with open(feature_path, "r") as f:
         feature_cols = json.load(f)
 
-    if TARGET_COLUMN not in df.columns:
-        raise ValueError(f"Target column '{TARGET_COLUMN}' not found in data.")
+    if target_col not in df.columns:
+        raise ValueError(f"Target column '{target_col}' not found in data.")
 
     logging.info(f"Using features: {feature_cols}")
-    logging.info(f"Target: {TARGET_COLUMN}")
+    logging.info(f"Target: {target_col}")
+    logging.info(f"Sequence length: {sequence_length}")
 
-    X, y = create_sequences(df, feature_cols, TARGET_COLUMN, SEQUENCE_LENGTH)
+    X, y = create_sequences(df, feature_cols, target_col, sequence_length)
 
     X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.4, shuffle=False)
     X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, shuffle=False)

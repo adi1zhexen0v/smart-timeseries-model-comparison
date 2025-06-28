@@ -8,7 +8,7 @@ from utils import get_project_root
 project_root = get_project_root()
 sys.path.insert(0, project_root)
 
-from src.extract.sensor_loader import collect_all_stations_data
+from src.domains.air_pollution.sensor_loader import collect_all_stations_data
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

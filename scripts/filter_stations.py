@@ -7,7 +7,7 @@ from utils import get_project_root, get_latest_pipeline_dir
 project_root = get_project_root()
 sys.path.insert(0, project_root)
 
-from src.preprocess.station_filter import filter_stations_by_history
+from src.domains.air_pollution.filter_stations import filter_stations_by_history
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

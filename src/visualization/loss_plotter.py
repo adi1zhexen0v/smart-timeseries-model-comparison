@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 
-def plot_loss(history, model_name: str, output_dir: str):
+def plot_loss(history, dataset_type: str, model_type: str, output_dir: str):
     loss = history.history["loss"]
     val_loss = history.history["val_loss"]
 
@@ -12,7 +12,6 @@ def plot_loss(history, model_name: str, output_dir: str):
     plt.xlabel("Epoch")
     plt.ylabel("MSE")
     plt.legend()
-    filename = f"{model_name}_loss.png"
+    filename = f"{dataset_type}_{model_type}_loss.png"
     save_path = os.path.join(output_dir, filename)
     plt.savefig(save_path)
-

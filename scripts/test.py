@@ -110,11 +110,11 @@ def fetch_glasgow_traffic(start_date: datetime, end_date: datetime, output_path:
             logging.warning("No data was collected. Nothing to save.")
 
 if __name__ == "__main__":
-    start_date = datetime(2021, 9, 28)
-    end_date = datetime(2021, 11, 1)
+    start_date = datetime(2022, 9, 1)
+    end_date = datetime(2022, 10, 31)
 
     timestamp_id = int(datetime.utcnow().timestamp() * 1000)
     filename = f"{timestamp_id}_glasgow_traffic_data.csv"
-    output_path = os.path.join("data", "traffic", "processed", filename)
+    output_path = os.path.join("data", filename)
 
     fetch_glasgow_traffic(start_date, end_date, output_path)
