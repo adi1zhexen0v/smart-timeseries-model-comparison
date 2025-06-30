@@ -11,12 +11,12 @@ def set_season(month: int) -> str:
         return "autumn"
     return "unknown"
 
-def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
-    df["date"] = pd.to_datetime(df["date"])
+def add_time_features(df: pd.DataFrame, key: str = "date") -> pd.DataFrame:
+    df[key] = pd.to_datetime(df[key])
 
-    df["dayofweek"] = df["date"].dt.dayofweek
-    df["month"] = df["date"].dt.month
-    df["day"] = df["date"].dt.day
+    df["dayofweek"] = df[key].dt.dayofweek
+    df["month"] = df[key].dt.month
+    df["day"] = df[key].dt.day
 
     df["season"] = df["month"].apply(set_season)
     df["season"] = df["season"].map({"winter": 0, "spring": 1, "summer": 2, "autumn": 3})

@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 NON_FEATURE_COLUMNS = {
     "air_pollution": ["date", "station_name", "latitude", "longitude"],
-    "traffic": ["timestamp", "site_id", "lat", "long"],
+    "traffic": ["date", "site_id", "lat", "long"],
     "energy": ["timestamp", "region", "latitude", "longitude"],
 }
 

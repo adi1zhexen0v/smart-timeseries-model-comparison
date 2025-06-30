@@ -1,13 +1,10 @@
-import os
 import time
 import logging
 import pandas as pd
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
-from typing import Tuple
 
-# Setup cached session
 cache = requests_cache.CachedSession(".cache", expire_after=-1)
 session = retry(cache, retries=5, backoff_factor=0.2)
 openmeteo = openmeteo_requests.Client(session=session)

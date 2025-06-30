@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 TARGET_COLUMNS = {
     "air_pollution": "PM2.5",
-    "traffic": "vehicle_count",
+    "traffic": "flow",
     "energy": "consumption"
 }
 
@@ -41,7 +41,7 @@ def main():
     args = parser.parse_args()
 
     dataset_dir = os.path.join(project_root, "data", args.dataset_type, "processed")
-    scaler_path = os.path.join(project_root, "data", args.dataset_type, "processed", "scaler_params.json")
+    scaler_path = os.path.join(dataset_dir, "scaler_params.json")
 
     target_col = TARGET_COLUMNS.get(args.dataset_type)
     if target_col is None:
@@ -54,7 +54,8 @@ def main():
     os.makedirs(os.path.join(project_root, diagram_subdir), exist_ok=True)
     os.makedirs(os.path.join(project_root, metrics_subdir), exist_ok=True)
 
-    model_path = os.path.join(project_root, model_subdir, f"{args.dataset_type}_{args.model_name}_tcn.keras")
+    model_filename = f"{args.dataset_type}_{args.model_name}_tcn.keras"
+    model_path = os.path.join(project_root, model_subdir, model_filename)
 
     logging.info("Training TCN model with parameters:")
     logging.info(f"filters={args.nb_filters}, kernel_size={args.kernel_size}, "
@@ -74,9 +75,10 @@ def main():
         dilations=parse_dilations(args.dilations),
         nb_stacks=args.nb_stacks,
         dropout=args.dropout,
-        dense_units=args.dense_units
+        dense_units=args.dense_units,
+        model_path=model_path,
+        target_column=target_col
     )
-
     end_time = time.time()
     training_time = end_time - start_time
 
@@ -93,7 +95,7 @@ def main():
         scaler_path=scaler_path,
         model_name=args.model_name,
         model_type="tcn",
-        target_col="PM2.5",
+        target_col=target_col,
         output_dir=os.path.join(project_root, diagram_subdir)
     )
 

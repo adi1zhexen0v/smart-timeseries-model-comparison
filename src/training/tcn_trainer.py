@@ -23,8 +23,7 @@ def load_dataset(dataset_dir):
         "y_test": load_file("y_test", dataset_dir),
     }
 
-def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8),
-                    nb_stacks=1, dropout=0.3, dense_units=32):
+def build_tcn_model(input_shape, nb_filters=64, kernel_size=3, dilations=(1, 2, 4, 8), nb_stacks=1, dropout=0.3, dense_units=32):
     model = Sequential()
     model.add(TCN(
         nb_filters=nb_filters,
@@ -56,7 +55,8 @@ def train_tcn(
     dilations=(1, 2, 4, 8),
     nb_stacks=1,
     dropout=0.3,
-    dense_units=32
+    dense_units=32,
+    model_path=None
 ):
     prepared_dir = os.path.join(dataset_dir, "prepared_dataset")
 
@@ -73,6 +73,7 @@ def train_tcn(
             output_dir=prepared_dir,
             target_column=target_column,
             sequence_length=sequence_length,
+            dataset_type=dataset_type
         )
 
     data = load_dataset(prepared_dir)
@@ -109,9 +110,11 @@ def train_tcn(
         verbose=1
     )
 
-    os.makedirs(output_dir, exist_ok=True)
-    model_name = f"{dataset_type}_{tag}_tcn.keras"
-    save_path = os.path.join(output_dir, model_name)
-    model.save(save_path)
+    if model_path is None:
+        os.makedirs(output_dir, exist_ok=True)
+        model_name = f"{dataset_type}_{tag}_tcn.keras"
+        model_path = os.path.join(output_dir, model_name)
 
+    model.save(model_path)
     return model, history, data
+

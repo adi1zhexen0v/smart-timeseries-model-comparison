@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 TARGET_COLUMNS = {
     "air_pollution": "PM2.5",
-    "traffic": "vehicle_count",
+    "traffic": "flow",
     "energy": "consumption"
 }
 
@@ -48,7 +48,7 @@ def main():
     os.makedirs(os.path.join(project_root, diagram_subdir), exist_ok=True)
     os.makedirs(os.path.join(project_root, metrics_subdir), exist_ok=True)
 
-    model_path = os.path.join(project_root, model_subdir, f"{args.model_name}_lstm.keras")
+    model_path = os.path.join(project_root, model_subdir, f"{args.dataset_type}_{args.model_name}_lstm.keras")
 
     logging.info(f"Training LSTM model from {dataset_dir}")
     logging.info(f"Parameters: units={args.units}, dropout={args.dropout}, dense_units={args.dense_units}")
@@ -63,7 +63,8 @@ def main():
         batch_size=args.batch_size,
         units=args.units,
         dropout=args.dropout,
-        dense_units=args.dense_units
+        dense_units=args.dense_units,
+        target_column=target_col
     )
     end_time = time.time()
     training_time = end_time - start_time
